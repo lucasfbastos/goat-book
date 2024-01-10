@@ -73,7 +73,7 @@ class NewVisitorTest(LiveServerTestCase):
         inputbox = self.browser.find_element(By.ID, "id_new_item")
         inputbox.send_keys("Buy peacock feathers")
         inputbox.send_keys(Keys.ENTER)
-        self.wait_for_row_in_list_table("1: Buy peacock feathers")
+        self.wait_for_row_in_list_table("1. Buy peacock feathers")
 
         # She notices that her list has a unique URL
         edith_list_url = self.browser.current_url
@@ -87,10 +87,16 @@ class NewVisitorTest(LiveServerTestCase):
 
         # Francis visits the home page. There is no sign of Edith's list
         self.browser.get(self.live_server_url)
-        page_text = self.browser.find_element(By.ID, "id_new_item")
+        page_text = self.browser.find_element(By.TAG_NAME, "body").text
+        self.assertNotIn("Buy peacock feathers", page_text)
+        self.assertNotIn("make a fly", page_text)
+
+        # Francis start a new list by entering a new item. 
+        # He is less interesting than Edith...
+        inputbox = self.browser.find_element(By.ID, "id_new_item")
         inputbox.send_keys("Buy milk")
         inputbox.send_keys(Keys.ENTER)
-        self.wait_for_row_in_list_table("1: Buy milk")
+        self.wait_for_row_in_list_table("1. Buy milk")
 
         # Francis gets his own unique URL
         francis_list_url = self.browser.current_url
